@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>R6 Rover Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>R6 Rover Dashboard</h1>
+
+    <!-- VIDEO STREAM -->
+    <div class="video-box">
+
+        <iframe
+            src="http://10.183.225.138:8889/cam"
+            width="640"
+            height="480"
+            allowfullscreen>
+        </iframe>
+
+        <!-- LEFT-SIDE FLOATING DPAD, NO BACKGROUND -->
+        <div class="controller-overlay minimal-overlay">
+            <button class="btn up" data-cmd="forward">▲</button>
+
+            <div class="controller-row">
+                <button class="btn left" data-cmd="left">◀</button>
+                <button class="btn stop" data-cmd="stop">■</button>
+                <button class="btn right" data-cmd="right">▶</button>
+            </div>
+
+            <button class="btn down" data-cmd="backward">▼</button>
+        </div>
+
+    </div>
+
+    <!-- RIGHT SIDE PANELS -->
+    <div class="right-side">
+
+        <!-- GPS PANEL -->
+        <div class="gps-panel">
+            <h2>GPS Data</h2>
+            <button id="pingBtn" class="sys-btn gps">Ping GPS</button>
+            <pre id="gpsData">Waiting for GPS data...</pre>
+        </div>
+
+        <!-- SYSTEM PANEL -->
+        <div class="system-panel">
+            <h2>System Status</h2>
+            <ul id="statusList">
+                <li>Press "Get Status" to refresh...</li>
+            </ul>
+
+            <button id="statusBtn" class="sys-btn status">Get Status</button>
+            <button onclick="rebootPi()" class="sys-btn reboot">Reboot</button>
+            <button onclick="shutdownSystem()" class="sys-btn shutdown">Shutdown</button>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+

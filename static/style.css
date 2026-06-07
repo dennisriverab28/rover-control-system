@@ -1,0 +1,146 @@
+/* === GLOBAL STYLING === */
+body {
+    background-color: #0d1117;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 30px;
+}
+
+h1 {
+    grid-column: 1 / span 2;
+    text-align: center;
+    color: #58a6ff;
+    margin-bottom: 20px;
+}
+
+/* === VIDEO AREA === */
+.video-box {
+    position: relative;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    background: #111a22;
+    border-radius: 12px;
+    box-shadow: 0 0 14px rgba(0,0,0,0.6);
+}
+
+.video-box iframe {
+    border: none;
+    border-radius: 12px;
+}
+
+/* ======================================================= */
+/* FLOATING LEFT-SIDE DPAD — NO BACKGROUND CONTAINER       */
+/* ======================================================= */
+
+.controller-overlay.minimal-overlay {
+    position: absolute;
+    left: -40x;       /* Puts D-pad on the LEFT side of video */
+    top: 50%;
+    transform: translateY(-50%);
+    background: none !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.controller-overlay.minimal-overlay button {
+    width: 55px;
+    height: 55px;
+    margin: 4px;
+    border: none;
+    border-radius: 12px;
+    font-size: 26px;
+
+    background: rgba(255,255,255,0.08);
+    color: #58a6ff;
+    transition: background 0.15s ease;
+}
+
+.controller-overlay.minimal-overlay button:active {
+    background: rgba(88,166,255,0.35);
+}
+
+/* STOP BUTTON stays red */
+.btn.stop {
+    background: rgba(255,50,50,0.55) !important;
+    color: white !important;
+}
+
+.controller-row {
+    display: flex;
+    justify-content: center;
+}
+
+/* === RIGHT SIDE PANELS === */
+.right-side > div {
+    background: #111a22;
+    padding: 18px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.45);
+}
+
+.gps-panel h2,
+.system-panel h2 {
+    margin-top: 0;
+    color: #58a6ff;
+}
+
+/* === BUTTONS === */
+.sys-btn {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 16px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    color: white;
+}
+
+.sys-btn:hover {
+    opacity: 0.85;
+}
+
+.gps { background-color: #1f6feb; }
+.status { background-color: #238636; }
+.reboot { background-color: #f79e1b; }
+.shutdown { background-color: #da3633; }
+
+/* === GPS output area === */
+#gpsData {
+    height: 90px;
+    background: black;
+    border: 1px solid #58a6ff;
+    color: #00ff88;
+    font-family: monospace;
+    padding: 8px;
+    border-radius: 8px;
+    overflow-y: auto;
+}
+
+/* === Status list === */
+#statusList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#statusList li {
+    color: #00ff88;
+    margin: 4px 0;
+}
+
