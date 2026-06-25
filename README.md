@@ -1,109 +1,87 @@
-# Rover Control System
+<p align="center">
+  <img src="docs/banner.svg" alt="Rover Control System" width="100%">
+</p>
 
-**Platform:** Raspberry Pi — Python + Flask  
-**Hardware:** 2-wheel differential-drive rover with IMU, GPS, and L298N motor driver
+<p align="center">
+  <img src="https://img.shields.io/badge/Raspberry_Pi-A22846?logo=raspberrypi&logoColor=white" alt="Raspberry Pi">
+  <img src="https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Flask-000000?logo=flask&logoColor=white" alt="Flask">
+  <img src="https://img.shields.io/badge/MPU--6050-0AA" alt="MPU-6050">
+  <img src="https://img.shields.io/badge/status-complete-22c55e" alt="Status">
+</p>
 
----
-
-## Overview
-
-A Raspberry Pi-powered rover with a web-based control interface. A Flask server runs on the Pi and serves a live browser dashboard — any device on the same network can drive the rover, monitor IMU tilt data, and view GPS coordinates in real time. The rover features smooth speed ramping (acceleration/deceleration), IMU-based auto-balance mode, and systemd-compatible startup scripts.
-
----
-
-## Features
-
-| Feature | Description |
-|---------|-------------|
-| **Web Control UI** | Browser-based joystick interface (Flask + HTML/JS) |
-| **Motor Control** | Differential-drive via L298N with GPIO PWM (1 kHz) |
-| **Speed Ramping** | Threaded acceleration/deceleration for smooth movement |
-| **IMU Integration** | MPU-6050 tilt/balance feedback via I2C |
-| **GPS Tracking** | Background GPS thread streaming real-time coordinates |
-| **Auto-Balance Mode** | Toggleable IMU-based auto-leveling |
-| **Startup Scripts** | `start_rover.sh`, `stop_rover.sh`, `restart_rover.sh`, `check_rover.sh` |
-| **State Machine** | Motor state machine (`FORWARD`, `BACKWARD`, `LEFT`, `RIGHT`, `STOP`) |
+<p align="center">
+  A Raspberry Pi differential-drive rover you drive from a browser. A Flask server serves a live
+  control dashboard — any device on the network can steer it, watch IMU tilt, and read GPS<br>
+  coordinates in real time, with smooth speed ramping and a toggleable IMU auto-balance mode.
+</p>
 
 ---
 
-## Hardware
+## ✨ What it does
+
+- 🕹️ **Browser control** — a Flask + HTML/JS dashboard sends `fetch()` calls on button press/release
+  to REST endpoints (`/forward`, `/backward`, `/left`, `/right`, `/stop`, `/speed`, `/balance`).
+- ⚙️ **Differential drive** — an L298N H-bridge with two 1 kHz PWM channels controls left/right
+  motor speed independently, tracked by a `FORWARD/BACKWARD/LEFT/RIGHT/STOP` state machine.
+- 📈 **Speed ramping** — acceleration and deceleration run in separate threads, stepping PWM duty
+  5% every 200 ms; a `threading.Lock` guards the shared speed state.
+- ⚖️ **IMU auto-balance** — `Balance.py` reads an MPU-6050 over I2C in a daemon thread and adjusts
+  motor output to keep the rover level when enabled.
+- 🛰️ **Live GPS** — a background thread streams real-time coordinates to the dashboard.
+- 🔧 **Ops scripts** — `start` / `stop` / `restart` / `check` shell scripts manage the server.
+
+## 🏗 Architecture
+
+```mermaid
+flowchart LR
+    UI[Browser dashboard] -->|fetch · REST| FLASK[Flask server]
+    FLASK --> SM[Motor state machine]
+    SM -->|PWM · GPIO| L298N[L298N H-bridge → motors]
+    IMU[MPU-6050 · I2C] -.->|balance thread| SM
+    GPS[GPS module] -.->|background thread| FLASK
+```
+
+## 🔌 Hardware
 
 | Component | Detail |
-|-----------|--------|
+| --------- | ------ |
 | Controller | Raspberry Pi |
-| Motor Driver | L298N dual H-bridge |
-| Left Motor | GPIO 23 (IN1), GPIO 24 (IN2), PWM ENA=12 |
-| Right Motor | GPIO 27 (IN3), GPIO 22 (IN4), PWM ENB=13 |
+| Motor driver | L298N dual H-bridge |
+| Left motor | IN1 = GPIO 23, IN2 = GPIO 24, ENA = GPIO 12 (PWM) |
+| Right motor | IN3 = GPIO 27, IN4 = GPIO 22, ENB = GPIO 13 (PWM) |
 | IMU | MPU-6050 (I2C) |
 | GPS | UART GPS module |
 
----
+## 🗂 Project structure
 
-## Project Structure
-
-```
-Rover_Control_System/
+```text
 ├── final_version_app.py    # Main Flask app (production version)
-├── app.py                  # Earlier Flask iteration
-├── app_new_SM.py           # State machine refactor version
-├── fixed_threading.py      # Threading fix experiment
-├── Balance.py              # IMU balancing logic (MPU-6050)
-├── IMU.py                  # Raw IMU data reader
+├── app.py / app_new_SM.py  # Earlier iterations / state-machine refactor
+├── Balance.py / IMU.py     # MPU-6050 balancing + raw IMU reader
 ├── gps_module.py           # GPS background thread
-├── test_n20.py             # N20 motor hardware test
-│
-├── static/
-│   ├── script.js           # Frontend control logic (fetch API calls)
-│   └── style.css           # Dashboard styling
-├── templates/
-│   └── index.html          # Web control interface
-│
-├── start_rover.sh          # Start Flask server (background)
-├── stop_rover.sh           # Kill Flask server
-├── restart_rover.sh        # Restart Flask server
-├── check_rover.sh          # Check if server is running
-└── README.md
+├── static/                 # script.js (controls) + style.css
+├── templates/index.html    # web control interface
+└── *.sh                    # start / stop / restart / check scripts
 ```
 
----
+## 🚀 Setup & run
 
-## Setup & Run
-
-### Requirements
 ```bash
-pip install flask RPi.GPIO
-```
-Also requires:
-- `smbus2` or `smbus` for IMU I2C
-- A GPS daemon (`gpsd`) if using GPS module
+pip install flask RPi.GPIO smbus2     # smbus2 for the MPU-6050; gpsd for GPS
 
-### Run the Server
-```bash
 python final_version_app.py
-```
-Or use the startup scripts:
-```bash
-bash start_rover.sh
+# or: bash start_rover.sh
 ```
 
-### Access the Dashboard
-Open a browser on any device connected to the same network:
-```
-http://<raspberry-pi-ip>:5000
-```
+Then open the Pi's address in a browser on the same network and drive.
 
----
+## 🧰 Stack
 
-## How It Works
-
-### Motor Control
-GPIO pins drive an L298N H-bridge. Two PWM channels (ENA at GPIO 12, ENB at GPIO 13) at 1 kHz control left/right motor speed independently. A state machine tracks the current direction (`FORWARD`, `BACKWARD`, `LEFT`, `RIGHT`, `STOP`).
-
-### Speed Ramping
-Acceleration and deceleration run in separate threads that step PWM duty cycle by 5% every 200 ms. A `threading.Lock` protects shared speed state across threads.
-
-### IMU Balance Mode
-`Balance.py` reads the MPU-6050 via I2C and runs in a daemon thread. When auto-balance is enabled, it computes tilt angle and adjusts motor output to keep the rover level.
-
-### Web Interface
-The Flask server exposes REST endpoints (`/forward`, `/backward`, `/left`, `/right`, `/stop`, `/speed`, `/balance`). The `static/script.js` sends `fetch()` requests on button press/release, updating rover state in real time.
+| Layer | Tech |
+| ----- | ---- |
+| Controller | Raspberry Pi, Python 3 |
+| Server | Flask (REST endpoints) |
+| Frontend | HTML + JavaScript (`fetch`) |
+| Motion | L298N H-bridge, GPIO PWM, threaded speed ramping |
+| Sensing | MPU-6050 IMU (I2C), UART GPS |
