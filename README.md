@@ -57,7 +57,7 @@ flowchart LR
 
 ```text
 ├── final_version_app.py    # Main Flask app (production version)
-├── app.py / app_new_SM.py  # Earlier iterations / state-machine refactor
+├── archive/                # Earlier iterations (app.py, state-machine refactor, threading fix)
 ├── Balance.py / IMU.py     # MPU-6050 balancing + raw IMU reader
 ├── gps_module.py           # GPS background thread
 ├── static/                 # script.js (controls) + style.css

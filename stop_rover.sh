@@ -7,7 +7,7 @@
 echo "🛑 Stopping Rover Control System..."
 
 # Kill Flask app
-pkill -f "python3 app.py"
+pkill -f "python3 final_version_app.py"
 sleep 1
 
 # Kill GStreamer

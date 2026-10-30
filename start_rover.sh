@@ -89,7 +89,7 @@ fi
 if [ $FLAG_STREAM -eq 1 ]; then
     echo "🌐 Launching Flask control server..." | tee -a $LOGFILE
     source /home/r6pi/Documents/rover_control/venv/bin/activate
-    nohup python3 /home/r6pi/Documents/rover_control/app.py > logs/flask_$DATE.log 2>&1 &
+    nohup python3 /home/r6pi/Documents/rover_control/final_version_app.py > logs/flask_$DATE.log 2>&1 &
     FLASK_PID=$!
     sleep 3
     if ps -p $FLASK_PID > /dev/null; then

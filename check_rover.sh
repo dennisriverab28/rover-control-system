@@ -18,7 +18,7 @@ else
     echo "❌ GStreamer:   NOT running"
 fi
 
-if pgrep -f "app.py" > /dev/null; then
+if pgrep -f "final_version_app.py" > /dev/null; then
     echo "🌐 Flask App:   RUNNING"
 else
     echo "❌ Flask App:   NOT running"
